@@ -1,11 +1,343 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto-Portifolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Controle de Portfólios - Turmas</title>
+
+<!-- CSS EXTERNO -->
+<link rel="stylesheet" href="index.css">
+
 </head>
+
 <body>
-    
+
+<header>
+<nav>
+<button onclick="mostrarTurma('1A')" id="btn-1A">1° A</button>
+<button onclick="mostrarTurma('1B')" id="btn-1B">1° B</button>
+<button onclick="mostrarTurma('2A')" id="btn-2A">2° A</button>
+<button onclick="mostrarTurma('3A')" id="btn-3A">3° A</button>
+<button onclick="alternarTema()" id="btn-tema">🌙 Escuro</button>
+</nav>
+</header>
+
+<main>
+
+<div id="boas-vindas">
+<h2>Bem-vindo ao Sistema de Portfólios</h2>
+<p>Selecione uma turma no menu acima para visualizar os alunos.</p>
+</div>
+
+<div id="turma-detalhes" style="display:none;">
+
+<h2 id="titulo-turma"></h2>
+
+<p>
+Total de alunos:
+<span id="total-alunos" class="badge">0</span>
+</p>
+
+<p id="resumo-status"></p>
+
+<input type="text" id="pesquisa" placeholder="🔍 Pesquisar aluno..." onkeyup="filtrarAluno()">
+
+<div id="lista-alunos" class="grid-alunos"></div>
+
+</div>
+
+</main>
+
+<script>
+
+/* =========================
+   DADOS DAS TURMAS
+========================= */
+
+let turmas = {
+
+"1A":[
+{nome:"ADRIEL MATHEUS MARTINS GAMAS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"ANNA LUIZA GARCIA TARDIM",link:"https://drive.google.com/",status:"pendente"},
+{nome:"BIANCA HELOISE GONÇALVES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"BRUNO SAMUELL PRIETO",link:"https://drive.google.com/",status:"pendente"},
+{nome:"CASSIANE LETÍCIA DE OLIVEIRA DO NASCIMENTO",link:"https://drive.google.com/",status:"pendente"},
+{nome:"FABIO NUNES TROMBINI",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GABRIEL GARCIA MACHADO",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GABRIEL HENRIQUE DOS SANTOS ARAUJO",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GABRIEL MARCELO CASTANHARI DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GEOVANNA COSTA DE OLIVEIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GEOVANNA GABRIELLE DE ANDRADE",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GUILHERME APARECIDO DE MEDEIROS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GUSTAVO MACIEL BRUZ DE OLIVEIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"THOMAS LARSSON DE SOUZA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"IASMIM LOPES AVELINO DOS SANTOS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"JÉSSICA GABRIELI MARTINS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"JOÃO PEDRO DE OLIVEIRA ALVES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"KAUÃ ALEXANDRE DE ANDRADE FERREIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LEONARDO DA SILVA FERNANDES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LINCOLN BATISTA RODRIGUES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LOHANNA NAYARA GEDOZ BARRIOS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LUAN HENRIQUE TASSI DE OLIVEIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LUANN HENRIQUE NANTES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MARIA EDUARDA SANTOS GODOY",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MARIA GABRIELA DO NASCIMENTO DE OLIVEIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MATHEUS AUGUSTO FERREIRA DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MATHEUS DIAS MOYSÉS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"NICOLAS GRANUCCI BELLANÇON",link:"https://drive.google.com/",status:"pendente"},
+{nome:"PAULO MIGUEL MATIAS DE SOUZA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"PEDRO CASSIANO RUIZ DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"PEDRO HENRIQUE DA SILVA BEGALLI",link:"https://drive.google.com/",status:"pendente"},
+{nome:"SOPHIA DE CASSIA DA SILVA TRINDADE",link:"https://drive.google.com/",status:"pendente"},
+{nome:"TIAGO CARDOSO RODRIGUES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"EMILY KAUANE DE OLIVEIRA FERREIRA",link:"https://drive.google.com/",status:"pendente"}
+],
+
+"1B":[
+{nome:"ANA BEATRIZ RODRIGUES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"ANA KAROLINA PEREIRA MIGUEL",link:"https://drive.google.com/",status:"pendente"},
+{nome:"BENJAMIM LOPES MOREIRA DE ALMEIDA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"ENZO GABRIEL ORTIZ MUNIZ MENCK",link:"https://drive.google.com/",status:"pendente"},
+{nome:"ÉRICK LEMES CASSITTA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GABRIEL MELLO SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"IGOR GABRIEL BISPO DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"ISABELLA LUANA NASCIMENTO DE OLIVEIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"JOSÉ MARIO ROSSI DA ROSA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"JULIA BEATRIZ DE SOUZA ROCHA ROSSETTI",link:"https://drive.google.com/",status:"pendente"},
+{nome:"JULIA NOGUEIRA DE OLIVEIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"KEVIN OSCAR BELIERA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LORENA VITÓRIA DE LIMA DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LUCAS DA SILVA DE BARROS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MARIA LUISA MESSI PAVANELI",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MATHEUS HUMBERTO LAUREANO GASPARINI",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MAYCON FERNANDO FIGUEIREDO JÚNIOR",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MIGUEL COELHO AMARO ANTUNES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"PABLO DANIEL MORAIS DA SILVA DE SOUSA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"RAFAEL SILVA DE OLIVEIRA JUNIOR",link:"https://drive.google.com/",status:"pendente"},
+{nome:"RONALDY KEIVISON MARQUES FERREIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"SAMUEL WILLIAN DA SILVA DOS SANTOS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"STEPHANY AGATA LIMA FARIAS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"TEYLLON MATHEUS GONÇALVES BORGES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"VICTOR HUGO LIMA GUIMARÃES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"VITOR GABRIEL PEREIRA DOS SANTOS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"VÍTOR PEREIRA DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"YAGO GABRIEL INACIO DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"YASMIN EMANUELLA DOS SANTOS ROMUALDO",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LUCAS GABRIEL DE MENDONÇA ROSA",link:"https://drive.google.com/",status:"pendente"}
+],
+
+"2A":[
+{nome:"ARTHUR ALVES DE OLIVEIRA PEREZ",link:"https://drive.google.com/",status:"pendente"},
+{nome:"DAIMAR SARAY FLORES LOPEZ",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GABRIELA GROMANN LINO PEREIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GABRIEL GONÇALVES PARRON ALVAREZ",link:"https://drive.google.com/",status:"pendente"},
+{nome:"GEREMY FRANCISCO MANZOL MARIN",link:"https://drive.google.com/",status:"pendente"},
+{nome:"HENRIQUE FERREIRA DOS REIS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"JOÃO VITOR FERREIRA ALVES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"JÚLIA BERGAMASCO DA SILVA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"LUCAS GALVÃO LEMES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MIGUEL ANTUNES PAMPLONA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MIGUEL BATISTA DA SILVA DURSO",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MIGUEL SANCHES DE PAULA RODRIGUES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"PABLO MIGUEL RAMOS PADILHA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"RAFAEL HENRIQUE DE AGUIAR GARCIA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"RAFAEL PEREIRA MIGUEL",link:"https://drive.google.com/",status:"pendente"},
+{nome:"RYAN FILIPE COLANZI",link:"https://drive.google.com/",status:"pendente"},
+{nome:"SARAH IMPERES FARIAS",link:"https://drive.google.com/",status:"pendente"},
+{nome:"THIAGO AUGUSTO MATIAS DE SOUZA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"VITÓRIA BALBINO CRESPO",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MARIA EDUARDA SILVA DOS SANTOS",link:"https://drive.google.com/",status:"pendente"}
+],
+
+"3A":[
+{nome:"ALIFER GABRIEL DA SILVA DELAROZA",link:"https://alifer2211.github.io/site.links/site.html?authuser=0",status:"entregue"},
+{nome:"ANDREY SALGUEIRO",link:"https://andrey123salgueiro.github.io/Portifolio2026/portifolio.html",status:"entregue"},
+{nome:"AUGUSTO CÉSAR FERNANDES TERTO",link:"https://augusto324hs.github.io/portifo-lio.html/index2.html?authuser=0",status:"entregue"},
+{nome:"DAYELLENN FERNANDA DE LIMA XAVIER DE SOUZA",link:"https://dayday-13.github.io/portfolio/index.html?authuser=0",status:"entregue"},
+{nome:"ENZO GABRIEL ROSANELI ALDAVIS",link:"https://enzo2628aldavis.github.io/Portifolio2k26/?authuser=0",status:"entregue"},
+{nome:"EUDSON FELIPE BARBOSA DA SILVA",link:"https://eudsonj.github.io/portifolio/portifolio.html?authuser=0",status:"entregue"},
+{nome:"GABRIEL EDUARDO FRACHETA DE SOUZA",link:"https://fracheta.github.io/inicio/index.html?authuser=0",status:"entregue"},
+{nome:"HENRIQUE NEGRI ASCENCIO",link:"https://henriquenegriascencio.github.io/Lobby-de-links-terceir-o/?authuser=0",status:"entregue"},
+{nome:"HUBERT PRADO RAMOS",link:"https://portifolio2026-dx4tmgfrvcekpzg8vs22ku.streamlit.app/?authuser=0",status:"entregue"},
+{nome:"ISABELA SUSUKI HONORIO",link:"https://isasusuki.github.io/portifolio/index.html?authuser=0",status:"entregue"},
+{nome:"ISABELLA CARDOSO DOS SANTOS",link:"https://bellaa27.github.io/link/index.html?authuser=0",status:"entregue"},
+{nome:"ISABELLY BEATRIZ NUNES ROSA",link:"https://isahbeatriz.github.io/portifolio-2026/?authuser=0",status:"entregue"},
+{nome:"ISABELLY RAMOS DOS SANTOS",link:"https://isabellyrss.github.io/TodosOsSITESS/index.html?authuser=0",status:"entregue"},
+{nome:"JOÃO HENRIQUE HULALA BARNABÉ",link:"FFFFFFFFFF",status:"pendente"},
+{nome:"JOÃO PAULO FERREIRA DE ARAÚJO",link:"https://joaopaulo746.github.io/Paginas/index.html?authuser=0",status:"entregue"},
+{nome:"JOÃO PEDRO GONÇALVES DE OLIVEIRA",link:"https://robinho1512.github.io/todos.os.trabalhos/index.html?authuser=0",status:"entregue"},
+{nome:"KAUÃ GABRIEL MORETÃO DA SILVA",link:"https://kaua090123.github.io/Aura/?authuser=0",status:"entregue"},
+{nome:"KETHLEN CAROLINE GONÇALVES BENEDITO DA SILVA",link:"https://kethlencarolinegoncalvesbeneditosilva.github.io/portifolio-ket/portifolio.html?authuser=0",status:"entregue"},
+{nome:"LARISSA DE SOUZA BARBOSA DOS SANTOS",link:"https://larissacamargo-hash.github.io/repositorio-de-atividade/index.html?authuser=0",status:"entregue"},
+{nome:"MARCOS MOACIR PITTA WALGER",link:"https://armasem15.github.io/repositorio-de-atividades/site.html?authuser=0",status:"entregue"},
+{nome:"MARIA CLARA MOISES DE MORAES",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MARIA EDUARDA BASSANI VIANA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MARIA RITA ALVES PEREIRA",link:"https://drive.google.com/",status:"pendente"},
+{nome:"MIGUEL BESPALHOK DE SOUZA",link:"https://miguel09231309.github.io/site.links/site_links.html?authuser=0",status:"entregue"},
+{nome:"NICOLLY CAROLINE SANTOS RIBEIRO",link:"https://nicolly1265.github.io/TodosOsSites/index.html?authuser=0",status:"entregue"},
+{nome:"PÉROLA FONTANA CORCHOG",link:"https://perolafontana011.github.io/Portif-lio-2026/portif%C3%B3lio.html?authuser=0",status:"entregue"},
+{nome:"RICARDO SUREK CORBAXO",link:"https://binza575.github.io/portifolio/paginas.html?authuser=0",status:"entregue"},
+{nome:"ROGÉRIO ALEXANDRE CARVALHO DOS SANTOS",link:"https://rogerio123384.github.io/inicio/index.html?authuser=0",status:"entregue"},
+{nome:"SUSANA CIRQUEIRA TUASCO",link:"https://susihh.github.io/portfolio----2026/index.html?authuser=0",status:"entregue"},
+{nome:"VINICIUS VICTOR BENETTI LOURENÇO",link:"https://salivamolhada.github.io/Pagina-de-exercicios/index.html?authuser=0",status:"entregue"},
+{nome:"WESLEY ROBERTO AIRES ROZZI",link:"https://lightning133.github.io/repositorio/?authuser=0",status:"entregue"}
+],
+
+// (você pode manter o restante igual ao seu código)
+
+};
+
+
+/* =========================
+   CARREGAR DADOS SALVOS
+========================= */
+
+const dadosSalvos = localStorage.getItem("turmas");
+
+if(dadosSalvos){
+turmas = JSON.parse(dadosSalvos);
+}
+
+
+/* =========================
+   MOSTRAR TURMA
+========================= */
+
+function mostrarTurma(nomeTurma){
+
+document.getElementById("boas-vindas").style.display="none";
+document.getElementById("turma-detalhes").style.display="block";
+
+const alunos = turmas[nomeTurma];
+const lista = document.getElementById("lista-alunos");
+
+document.getElementById("titulo-turma").innerText =
+"Portfólios da Turma " + nomeTurma.replace("A","° A").replace("B","° B");
+
+document.getElementById("total-alunos").innerText = alunos.length;
+
+lista.innerHTML="";
+
+/* CONTADOR */
+const entregues = alunos.filter(a => a.status === "entregue").length;
+const pendentes = alunos.length - entregues;
+
+document.getElementById("resumo-status").innerHTML =
+`✅ Entregues: ${entregues} | ⏳ Pendentes: ${pendentes}`;
+
+/* LISTA */
+alunos.forEach((aluno, index)=>{
+
+let classe = aluno.status==="entregue"
+? "status-entregue"
+: "status-pendente";
+
+let texto = aluno.status==="entregue"
+? "Entregue"
+: "Pendente";
+
+lista.innerHTML += `
+<div class="card-aluno" onclick="toggleStatus(${index}, '${nomeTurma}')">
+<div class="status-folder ${classe}"></div>
+<span>${aluno.nome}</span>
+<span class="text-status">${texto}</span>
+<a href="${aluno.link}" target="_blank" class="link-aluno">Abrir</a>
+</div>
+`;
+
+});
+
+atualizarBotao(nomeTurma);
+}
+
+
+/* =========================
+   TROCAR STATUS
+========================= */
+
+function toggleStatus(index, turma){
+
+let aluno = turmas[turma][index];
+
+aluno.status = aluno.status === "entregue"
+? "pendente"
+: "entregue";
+
+/* SALVAR */
+localStorage.setItem("turmas", JSON.stringify(turmas));
+
+mostrarTurma(turma);
+}
+
+
+/* =========================
+BOTÃO ATIVO
+========================= */
+
+function atualizarBotao(turma){
+
+document.querySelectorAll("nav button").forEach(btn=>{
+btn.classList.remove("active");
+});
+
+document.getElementById("btn-"+turma).classList.add("active");
+
+}
+
+
+/* =========================
+PESQUISA
+========================= */
+
+function filtrarAluno(){
+
+let texto = document.getElementById("pesquisa").value.toLowerCase();
+let cards = document.querySelectorAll(".card-aluno");
+
+cards.forEach(card=>{
+
+let nome = card.innerText.toLowerCase();
+
+if(nome.includes(texto)){
+card.style.display="flex";
+}else{
+card.style.display="none";
+}
+
+});
+
+}
+
+
+/* =========================
+TEMA (SALVO)
+========================= */
+
+function alternarTema(){
+
+document.body.classList.toggle("dark-mode");
+
+const modoEscuro = document.body.classList.contains("dark-mode");
+
+localStorage.setItem("tema", modoEscuro);
+
+document.getElementById("btn-tema").innerHTML =
+modoEscuro ? "☀️ Claro" : "🌙 Escuro";
+
+}
+
+window.onload = () => {
+
+/* carregar tema */
+if(localStorage.getItem("tema") === "true"){
+document.body.classList.add("dark-mode");
+document.getElementById("btn-tema").innerHTML = "☀️ Claro";
+}
+
+};
+
+</script>
+
 </body>
 </html>
